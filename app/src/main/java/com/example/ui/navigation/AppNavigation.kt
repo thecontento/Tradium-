@@ -30,6 +30,8 @@ import com.example.ui.screens.analyzer.AIAnalyzerViewModel
 import com.example.ui.screens.analyzer.AIChartAnalyzerScreen
 import com.example.ui.screens.chat.CommunityChatScreen
 import com.example.ui.screens.chat.CommunityChatViewModel
+import com.example.ui.screens.chat.FinanceChatScreen
+import com.example.ui.screens.chat.FinanceChatViewModel
 import com.example.ui.screens.leaderboard.LeaderboardScreen
 import com.example.ui.screens.leaderboard.LeaderboardViewModel
 import com.example.ui.screens.profile.ProfileScreen
@@ -50,6 +52,7 @@ fun AppNavigation(
     navController: NavHostController,
     signalsViewModel: SignalsViewModel,
     analyzerViewModel: AIAnalyzerViewModel,
+    financeChatViewModel: FinanceChatViewModel,
     tradingViewModel: DemoTradingViewModel,
     chatViewModel: CommunityChatViewModel,
     leaderboardViewModel: LeaderboardViewModel,
@@ -58,6 +61,7 @@ fun AppNavigation(
     val items = listOf(
         Screen.Signals,
         Screen.Analyzer,
+        Screen.AiBot,
         Screen.Trading,
         Screen.Chat,
         Screen.Leaderboard,
@@ -132,6 +136,9 @@ fun AppNavigation(
             }
             composable(Screen.Analyzer.route) {
                 AIChartAnalyzerScreen(viewModel = analyzerViewModel)
+            }
+            composable(Screen.AiBot.route) {
+                FinanceChatScreen(viewModel = financeChatViewModel)
             }
             composable(Screen.Trading.route) {
                 DemoTradingScreen(viewModel = tradingViewModel)
