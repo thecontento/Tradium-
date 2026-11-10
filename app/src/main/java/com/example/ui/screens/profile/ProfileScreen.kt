@@ -32,6 +32,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -76,6 +77,7 @@ fun ProfileScreen(
 ) {
     val profile by viewModel.profile.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
+    val authState by viewModel.authState.collectAsState()
 
     val snackbarHostState = remember { SnackbarHostState() }
     val riskCalcSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -143,7 +145,7 @@ fun ProfileScreen(
 
                             Spacer(modifier = Modifier.width(14.dp))
 
-                            Column {
+                            Column(modifier = Modifier.weight(1f)) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Text(
                                         text = profile.username,
@@ -176,6 +178,27 @@ fun ProfileScreen(
                                             fontWeight = FontWeight.Bold
                                         )
                                     )
+                                }
+                            }
+
+                            if (authState.isAuthenticated) {
+                                val context = androidx.compose.ui.platform.LocalContext.current
+                                OutlinedButton(
+                                    onClick = { viewModel.signOut(context) },
+                                    shape = RoundedCornerShape(8.dp),
+                                    border = BorderStroke(1.dp, NeonRed.copy(alpha = 0.5f)),
+                                    modifier = Modifier.height(34.dp).testTag("sign_out_button")
+                                ) {
+                                    Text("Sign Out", style = MaterialTheme.typography.labelSmall, color = NeonRed)
+                                }
+                            } else {
+                                Button(
+                                    onClick = { viewModel.setShowAuthDialog(true) },
+                                    shape = RoundedCornerShape(8.dp),
+                                    colors = ButtonDefaults.buttonColors(containerColor = NeonCyan, contentColor = DarkSurface),
+                                    modifier = Modifier.height(34.dp).testTag("sign_in_modal_button")
+                                ) {
+                                    Text("Sign In", style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = DarkSurface)
                                 }
                             }
                         }
@@ -387,6 +410,19 @@ fun ProfileScreen(
             sheetState = riskCalcSheetState,
             accountBalance = profile.virtualBalance,
             onDismiss = { showRiskCalc.value = false }
+        )
+    }
+
+    if (uiState.showAuthDialog) {
+        val context = androidx.compose.ui.platform.LocalContext.current
+        com.example.ui.screens.auth.AuthModalDialog(
+            isLoading = uiState.authLoading,
+            errorMessage = uiState.authError,
+            onGoogleSignIn = { viewModel.signInWithGoogle(context) },
+            onSignIn = { email, pass -> viewModel.signInWithEmail(email, pass) },
+            onRegister = { email, pass, user -> viewModel.registerWithEmail(email, pass, user) },
+            onForgotPassword = { email -> viewModel.sendPasswordReset(email) },
+            onDismiss = { viewModel.setShowAuthDialog(false) }
         )
     }
 }

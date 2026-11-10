@@ -28,6 +28,12 @@ interface SignalDao {
     @Update
     suspend fun updateSignal(signal: SignalEntity)
 
+    @Query("SELECT * FROM signals ORDER BY timestamp DESC")
+    suspend fun getAllSignalsList(): List<SignalEntity>
+
+    @Query("UPDATE signals SET currentPrice = :currentPrice WHERE pair = :pair")
+    suspend fun updateSignalPriceByPair(pair: String, currentPrice: Double)
+
     @Query("UPDATE signals SET currentPrice = :currentPrice, status = :status WHERE id = :id")
     suspend fun updateSignalPriceAndStatus(id: String, currentPrice: Double, status: String)
 

@@ -30,19 +30,20 @@ class GreetingScreenshotTest {
       pair = "BTC/USDT",
       assetSymbol = "BTC",
       type = SignalType.LONG,
-      timeframe = "4h",
-      leverage = "10x",
+      status = SignalStatus.ACTIVE,
       entryPrice = 96500.0,
+      currentPrice = 97100.0,
       targetPrice1 = 98200.0,
       targetPrice2 = 99800.0,
       targetPrice3 = 102500.0,
       stopLoss = 94800.0,
-      riskRewardRatio = 3.2,
+      leverage = "10x",
+      timeframe = "4h",
       confidenceScore = 95,
+      riskLevel = com.example.domain.model.RiskLevel.MEDIUM,
       aiReasoning = "Bullish flag breakout confirmed by volume.",
       technicalIndicators = listOf("RSI: 58.4", "MACD: Bullish Cross"),
-      status = SignalStatus.ACTIVE,
-      createdAt = System.currentTimeMillis()
+      timestamp = System.currentTimeMillis()
     )
 
     composeTestRule.setContent {

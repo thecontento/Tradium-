@@ -33,14 +33,16 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
 
-        // Initialize Room Database & Repositories
+        // Initialize Room Database & Production Repositories
         val database = AppDatabase.getInstance(applicationContext)
-        val signalRepository = SignalRepositoryImpl(database)
-        val demoTradingRepository = DemoTradingRepositoryImpl(database)
-        val aiAnalyzerRepository = AIAnalyzerRepositoryImpl()
-        val chatRepository = ChatRepositoryImpl(database)
-        val geminiChatRepository = GeminiChatRepositoryImpl()
-        val leaderboardRepository = LeaderboardRepositoryImpl()
+        val marketDataRepository = com.example.data.repository.MarketDataRepositoryImpl()
+        val authRepository = com.example.data.repository.AuthRepositoryImpl()
+        val demoTradingRepository = com.example.data.repository.RealDemoTradingRepository(database, marketDataRepository)
+        val signalRepository = com.example.data.repository.RealSignalRepository(database, marketDataRepository)
+        val aiAnalyzerRepository = com.example.data.repository.AIAnalyzerRepositoryImpl(marketDataRepository)
+        val chatRepository = com.example.data.repository.FirestoreChatRepository(database)
+        val geminiChatRepository = com.example.data.repository.GeminiChatRepositoryImpl()
+        val leaderboardRepository = com.example.data.repository.FirestoreLeaderboardRepository()
 
         // Initialize ViewModels
         val signalsViewModel = SignalsViewModel(signalRepository, demoTradingRepository)
@@ -49,7 +51,7 @@ class MainActivity : ComponentActivity() {
         val tradingViewModel = DemoTradingViewModel(demoTradingRepository)
         val chatViewModel = CommunityChatViewModel(chatRepository)
         val leaderboardViewModel = LeaderboardViewModel(leaderboardRepository)
-        val profileViewModel = ProfileViewModel(demoTradingRepository)
+        val profileViewModel = ProfileViewModel(demoTradingRepository, authRepository)
 
         setContent {
             CryptoSignalTheme {

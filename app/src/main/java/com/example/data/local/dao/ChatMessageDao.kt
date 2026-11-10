@@ -18,6 +18,9 @@ interface ChatMessageDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMessages(messages: List<ChatMessageEntity>)
 
+    @Query("SELECT * FROM chat_messages WHERE channel = :channel ORDER BY timestamp ASC")
+    suspend fun getMessagesByChannelOnce(channel: String): List<ChatMessageEntity>
+
     @Query("UPDATE chat_messages SET likesCount = likesCount + 1 WHERE id = :messageId")
     suspend fun incrementLike(messageId: String)
 }

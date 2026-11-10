@@ -16,8 +16,14 @@ interface DemoTradeDao {
     @Query("SELECT * FROM demo_trades WHERE status = 'OPEN' ORDER BY openedAt DESC")
     fun getOpenTrades(): Flow<List<DemoTradeEntity>>
 
+    @Query("SELECT * FROM demo_trades WHERE status = 'OPEN' ORDER BY openedAt DESC")
+    suspend fun getOpenTradesList(): List<DemoTradeEntity>
+
     @Query("SELECT * FROM demo_trades WHERE status != 'OPEN' ORDER BY closedAt DESC")
     fun getClosedTrades(): Flow<List<DemoTradeEntity>>
+
+    @Query("SELECT * FROM demo_trades WHERE status != 'OPEN' ORDER BY closedAt DESC")
+    suspend fun getClosedTradesList(): List<DemoTradeEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTrade(trade: DemoTradeEntity)
